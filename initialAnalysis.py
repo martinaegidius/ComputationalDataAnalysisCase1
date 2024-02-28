@@ -155,7 +155,11 @@ def plotDataDistribution(numeric_df,categorical_df,labels=None,savefig=True):
     df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN?
     if(labels==None):
         labels = read_var_names()
-    labels.remove("C2") #remove C_2 from labels 
+    try:
+        labels.remove("C2") #remove C_2 from labels 
+    except ValueError:
+        pass
+    
 
     for p, ax in enumerate(axs.ravel()):
         if(p>=p_numeric): #used all numeric data-frames, plot distribution of categorical excluding feature which only contains H
