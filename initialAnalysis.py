@@ -76,7 +76,7 @@ def missingValueInformation(df,plot=False):
     return variable_nan_distribution, obs_nan_distribution
 
 
-def missingValuePlots(var_df,obs_df):
+def missingValuePlots(var_df,obs_df,path="plots"):
     fig, ax = plt.subplots(2,1,figsize=(18,12))
     #fig.suptitle("number of missing values per variable")
     #plt.xticks(rotation=90)
@@ -90,8 +90,10 @@ def missingValuePlots(var_df,obs_df):
     
     fig.tight_layout()
     plt.show()
-
-    fig.savefig('plots/missing_values.png')
+    if(path=="plots"):
+        fig.savefig('plots/missing_values.png')
+    else:
+        fig.savefig('missing_values.png')
     return None
 
 def standardize_col(column):
@@ -138,9 +140,7 @@ def covariance_plot(df,title=None,covAnalysis=False):
     #fig.colorbar(covIm, cax=cax)
     plt.colorbar(corrIm,fraction=0.046, pad=0.04)
     ax[1].set_title("Corr: " + title)
-
-
-
+    fig.savefig('corr_cov.png')
     if(covAnalysis):
         printHighCorrelations(corrs)
     return 
