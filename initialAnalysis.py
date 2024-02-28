@@ -76,7 +76,7 @@ def missingValueInformation(df,plot=False):
     return variable_nan_distribution, obs_nan_distribution
 
 
-def missingValuePlots(var_df,obs_df,path="plots"):
+def missingValuePlots(var_df,obs_df,path=None):
     fig, ax = plt.subplots(2,1,figsize=(18,12))
     #fig.suptitle("number of missing values per variable")
     #plt.xticks(rotation=90)
