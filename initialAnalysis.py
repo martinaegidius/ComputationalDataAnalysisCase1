@@ -146,6 +146,32 @@ def covariance_plot(df,title=None,covAnalysis=False):
     return 
 
 
+def plotDataDistribution(numeric_df,categorical_df):
+    #def plot_distributions(numeric_data,categorical_data):
+    [n,p_numeric] = numeric_df.shape
+    fig, axs = plt.subplots(10,10,figsize=(16,18))
+    df_np = numeric_df.to_numpy()
+    df_cat_np = categorical_df.to_numpy()
+    df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN?
+    labels = read_var_names()
+    labels.remove("C2") #remove C_2 from labels 
+
+    for p, ax in enumerate(axs.ravel()):
+        if(p>=p_numeric): #used all numeric data-frames, plot distribution of categorical excluding feature which only contains H
+            unique, counts = np.unique(df_cat_np[:,p-p_numeric],return_counts=True)
+            ax.bar(x=unique,height=counts)
+        else:
+            ax.hist(x=df_np[:,p],bins=20,density=True)
+            
+        ax.text(.15,.9,f'{labels[p]}',
+            horizontalalignment='center',
+            transform=ax.transAxes)
+        ax.set_yticks([])
+        
+    plt.show()
+    fig.savefig("dataDistribution.png")
+    return None
+
 #def standardize_data(df):
 
 
