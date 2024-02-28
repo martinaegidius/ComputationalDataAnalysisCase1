@@ -170,11 +170,48 @@ def plotDataDistribution(numeric_df,categorical_df,labels=None,savefig=True):
         ax.set_yticks([])
         
     plt.show()
-    plt.tight_layout()
     if(savefig):
         fig.savefig("dataDistribution.png")
     return None
 
+def scatterplots(numeric_df,categorical_df,pointsize=1.5,labels=None,savefig=True):
+    [n,p_numeric] = numeric_df.shape
+    fig, axs = plt.subplots(10,10,figsize=(16,18),sharey=True)
+    pointsize=1.5
+
+    df_np = numeric_df.to_numpy()
+    df_cat_np = categorical_df.to_numpy()
+    df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN?
+    labels = read_var_names()
+    labels.remove("C2")
+
+    for p, ax in enumerate(axs.ravel()):
+        if(p>=p_numeric): #used all numeric data-frames, plot distribution of categorical excluding feature which only contains H
+            #unique, counts = np.unique(df_cat_np[:,p-p_numeric],return_counts=True)
+            #ax.bar(x=unique,height=counts)
+            ax.scatter(x=df_cat_np[:,p-p_numeric],y=df_np[:,0],s=pointsize)
+        else:
+            ax.scatter(x=df_np[:,p],y=df_np[:,0],s=pointsize)
+            
+        ax.text(.15,.9,f'{labels[p]}',
+            horizontalalignment='center',
+            transform=ax.transAxes)
+        #ax.set_yticks([])
+        ax.set_xticks([])
+    if(savefig):
+        fig.savefig("dataScatterplots.png")
+    plt.show()
+
+
+def oneHotEncode(categorical_df):
+    from sklearn.preprocessing import OneHotEncoder
+    onehot_encoder = OneHotEncoder()
+    df_cat_np = categorical_df.to_numpy()
+    df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN? 
+    onehot_encoder.fit(df_cat_np)
+    categorical_onehot = onehot_encoder.transform(df_cat_np).toarray()
+    return categorical_onehot 
+    
 #def standardize_data(df):
 
 
