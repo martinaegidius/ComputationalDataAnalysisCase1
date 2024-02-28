@@ -146,7 +146,7 @@ def covariance_plot(df,title=None,covAnalysis=False):
     return 
 
 
-def plotDataDistribution(numeric_df,categorical_df):
+def plotDataDistribution(numeric_df,categorical_df,savefig=True):
     #def plot_distributions(numeric_data,categorical_data):
     [n,p_numeric] = numeric_df.shape
     fig, axs = plt.subplots(10,10,figsize=(16,18))
@@ -169,7 +169,9 @@ def plotDataDistribution(numeric_df,categorical_df):
         ax.set_yticks([])
         
     plt.show()
-    fig.savefig("dataDistribution.png")
+    plt.tight_layout()
+    if(savefig):
+        fig.savefig("dataDistribution.png")
     return None
 
 #def standardize_data(df):
