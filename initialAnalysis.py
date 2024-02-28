@@ -211,6 +211,33 @@ def scatterplots(numeric_df,categorical_df,pointsize=1.5,labels=None,savefig=Tru
         fig.savefig("dataScatterplots.png")
     plt.show()
 
+def categoricalMeans(train_data,savefig=False):
+    #train_data is the full dataframe
+    fig, ax = plt.subplots(1,5,figsize=(15,4))
+    c_labs = [f"C{i}" for i in range(1,6)]
+    for i in range(5):
+        mean_c1 = train_data.groupby(f"C_{i+1}")["y"].mean()
+        vals = mean_c1.values
+        ax[i].bar(mean_c1.index,vals)
+        ax[i].set_title(c_labs[i])
+        if(i==0):
+            ax[i].set_ylabel("$\hat{y} | C_i=c $")
+    if(savefig):
+        fig.savefig("categoricalMeans.png")
+    plt.show()
+
+    #if you want to see how the mean varies based on combination of values from C1 to C5 (ie how the combination of categorical variables influences y) - but the result is rather long
+        #mean_c1_to_c5 = train_data.groupby(['C_1', 'C_2', 'C_3', 'C_4', 'C_5'])['y'].mean()
+        #print("Mean of y for combinations of C1 to C5 categories:\n", mean_c1_to_c5)
+
+    return None
+        
+
+
+
+
+
+
 
 def oneHotEncode(categorical_df):
     from sklearn.preprocessing import OneHotEncoder
@@ -221,6 +248,8 @@ def oneHotEncode(categorical_df):
     categorical_onehot = onehot_encoder.transform(df_cat_np).toarray()
     return categorical_onehot 
     
+
+
 #def standardize_data(df):
 
 
