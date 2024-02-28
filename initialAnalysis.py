@@ -146,14 +146,15 @@ def covariance_plot(df,title=None,covAnalysis=False):
     return 
 
 
-def plotDataDistribution(numeric_df,categorical_df,savefig=True):
+def plotDataDistribution(numeric_df,categorical_df,labels=None,savefig=True):
     #def plot_distributions(numeric_data,categorical_data):
     [n,p_numeric] = numeric_df.shape
     fig, axs = plt.subplots(10,10,figsize=(16,18))
     df_np = numeric_df.to_numpy()
     df_cat_np = categorical_df.to_numpy()
     df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN?
-    labels = read_var_names()
+    if(labels==None):
+        labels = read_var_names()
     labels.remove("C2") #remove C_2 from labels 
 
     for p, ax in enumerate(axs.ravel()):
