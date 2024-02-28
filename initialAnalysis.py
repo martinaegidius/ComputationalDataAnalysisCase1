@@ -182,7 +182,8 @@ def scatterplots(numeric_df,categorical_df,pointsize=1.5,labels=None,savefig=Tru
     df_np = numeric_df.to_numpy()
     df_cat_np = categorical_df.to_numpy()
     df_cat_np = np.concatenate((df_cat_np[:,0,None],df_cat_np[:,2:]),axis=1) #remove C_2 as it is not informative except possibly NaN?
-    labels = read_var_names()
+    if(labels==None):
+        labels = read_var_names()
     labels.remove("C2")
 
     for p, ax in enumerate(axs.ravel()):
