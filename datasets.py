@@ -264,7 +264,7 @@ class case1Analyzer:
     def __init__(self,dataset):
         self.data = dataset
     
-    def VIF(self,plot=True):
+    def VIF(self,threshold=10.0,plot=True):
         from sklearn.linear_model import LinearRegression
         X = self.data.X[:,:self.data.N_numeric]
         vif = []
@@ -279,12 +279,13 @@ class case1Analyzer:
         if(plot==True):
             plt.figure(figsize=(16,4))
             plt.bar(x=self.data.var_names[1:self.data.N_numeric+1],height=vif,label="VIF-values")
-            plt.axhline(y=10.0,linewidth=1,color="r",linestyle="--",label="VIF-threshold = 10.0")
+            plt.axhline(y=threshold,linewidth=1,color="r",linestyle="--",label=f"VIF-threshold = {threshold}")
             plt.xticks(rotation=90)
             plt.xlim([-1,95])
             plt.legend()
             plt.savefig("VIF_scores.png")
             plt.show()
+        print(f"Found {np.sum(np.array(vif)>=threshold)} variables with VIF>={threshold}")
         return vif
     
 
