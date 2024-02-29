@@ -125,7 +125,7 @@ class case1TrainSet:
 
     def reset_values(self): 
         #destructor-restructor to re-initialize data without any transforms 
-        self.__init__()
+        self.__init__(path=self.path)
         return 
     
 
