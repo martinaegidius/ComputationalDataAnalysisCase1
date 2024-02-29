@@ -10,14 +10,15 @@ import csv
 
 class case1TrainSet:
     #class for reading and transforming training data for case 1
-    def __init__(self,path=None):
+    def __init__(self,path=None,normalize=True):
         if(path == None):
             self.path = ""
         else:
             self.path = path
-        self.initialize_data()
+        self.normalized = normalize
+        self.initialize_data(normalize)
 
-    def initialize_data(self):
+    def initialize_data(self,normalize=True):
         #called on initialization. Reads dataframe, splits data into numeric values Y, X1:X95, C1:C5 (denoted X_c). 
             #Transformation steps:
                 #Standardizes X1:X95. shape (100,95)
@@ -31,7 +32,11 @@ class case1TrainSet:
         self.Y, self.X_orig, self.X_c_orig = self.split_data()
         self.convertNumeric()
         #data transforms
-        self.X_numeric = self.standardize_df()
+        if(normalize==True):
+            self.X_numeric = self.standardize_df()
+        else:
+            self.X_numeric = self.X_orig.to_numpy()
+
         self.onehot_encoder = None
         self.X_c = self.oneHotEncode(removeC2=True)
         self.X = self.merge_data()
@@ -94,28 +99,40 @@ class case1TrainSet:
         return categorical_onehot
     
     ###Data imputation schemes
-    def simple_imputation(self,imputationStrategy="mean"):
-        self.saveMissingIndices()
+    def simple_imputation(self,imputationStrategy="mean",X=None):
+        #allows imputation for complete internally stored data or a matrix passed as argument
         #strategies: "mean","median", "most frequent"
         self.imputer = SimpleImputer(missing_values=np.nan, strategy=imputationStrategy)
-        self.X = self.imputer.fit_transform(self.X)
         self.imputer_name = f"{imputationStrategy} univariate imputation"
-        return 
+        if(X==None): #transform complete dataset
+            self.saveMissingIndices()
+            self.X = self.imputer.fit_transform(self.X)
+        else: #transform passed subset
+            return self.imputer.fit_transform(X)
+        return
     
-    def KNN_imputation(self,n_neighbours=5,weights="uniform"):
+    def KNN_imputation(self,n_neighbours=5,weights="uniform",X=None):
         #https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html#sklearn.impute.KNNImputer
         #possible weight schemes: "uniform" (Equal influence of K nearest points),"distance" (Closer points in neighbourhood larger influence)
-        self.saveMissingIndices()
         self.imputer = KNNImputer(n_neighbors=n_neighbours, weights=weights)
-        self.X = self.imputer.fit_transform(self.X)
         self.imputer_name = f"KNN k={n_neighbours} W={weights}"
+        if(X==None):
+            self.saveMissingIndices()
+            self.X = self.imputer.fit_transform(self.X)
+            return
+        else:
+            return self.imputer.fit_transform(X)
     
     
-    def iterative_imputation(self,max_iter=10,random_state=1):
-        self.saveMissingIndices()
+    def iterative_imputation(self,max_iter=10,random_state=1,X=None):
         self.imputer = IterativeImputer(max_iter=max_iter, random_state=random_state,sample_posterior=False) #set sample_posterior true if using multiple imputations per sample 
-        self.X = self.imputer.fit_transform(self.X)
         self.imputer_name = f"iterative k_max={max_iter}"
+        if(X==None):
+            self.saveMissingIndices()
+            self.X = self.imputer.fit_transform(self.X)
+            return
+        else:
+            return self.imputer.fit_transform(X)
         
     def saveMissingIndices(self):
         #method which saves indices which were NaN before imputation in order to visualize quality of imputation in scatter-plots
