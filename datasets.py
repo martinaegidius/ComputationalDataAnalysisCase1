@@ -197,30 +197,36 @@ class case1Plotter(case1TrainSet):
         plt.show()
         return 
     
-    def covariance_plot(self,title=None,covAnalysis=False,savefig=False):
+    def covariance_plot(self,title=None,covAnalysis=False,savefig=False,correlation_threshold=0.8):
         standardizedY = (self.data.Y-np.mean(self.data.Y))/np.std(self.data.Y)
         concat_data = np.concatenate((standardizedY[:,None],self.data.X),axis=1)
         covs = np.cov(concat_data,rowvar=False)
-        print("covariance shape: ",covs.shape)
-        print("covariances : ",covs)
         corrs = np.corrcoef(x=concat_data,rowvar=False)
-        fig, ax = plt.subplots(2,1,figsize=(10,10))
-        covIm = ax[0].imshow(covs,cmap="viridis")
+        #plot all the stuffs
+        fig, ax = plt.subplots(2,2,figsize=(10,10))
+        covIm = ax[0,0].imshow(covs,cmap="RdYlBu")
         #plt.colorbar(covIm,ax=ax[0])
-        ax[0].set_title("Imputed Covariance")
-        plt.colorbar(covIm,fraction=0.046, pad=0.04)
-        
-        corrIm = ax[1].imshow(corrs,cmap="viridis")
+        ax[0,0].set_title("Imputed Covariance")
+        plt.colorbar(covIm,fraction=0.046, pad=0.04,ax=ax[0,0])
+        corrIm = ax[1,0].imshow(corrs,cmap="RdYlBu",vmin=-correlation_threshold,vmax=correlation_threshold) #RdYlBu
         #cax = fig.add_axes([ax[1].get_position().x1-0.25,ax[1].get_position().y0,0.02,ax[0].get_position().y1-ax[1].get_position().y0])
         #fig.colorbar(covIm, cax=cax)
-        plt.colorbar(corrIm,fraction=0.046, pad=0.04)
-        ax[1].set_title("Imputed Correlation")
+        plt.colorbar(corrIm,fraction=0.046, pad=0.04,ax=ax[1,0])
+        ax[1,0].set_title("Imputed Correlation")
+        thresholdIm = ax[0,1].imshow(abs(corrs)>=correlation_threshold,cmap=plt.cm.get_cmap("viridis",2),interpolation="None")
+        ax[0,1].set_title(f"Correlation threshold {correlation_threshold}")
+        plt.colorbar(thresholdIm,fraction=0.046, pad=0.04,ax=ax[0,1],ticks=[0,1])
+        corrs_no_diag = corrs - np.eye(corrs.shape[0])
+        maxVal = np.max(abs(corrs_no_diag))-0.1
+        thresholdIm = ax[1,1].imshow(abs(corrs)>=maxVal,cmap=plt.cm.get_cmap("viridis",2),interpolation="None")
+        ax[1,1].set_title(f"Correlation threshold {maxVal:.2f}")
+        plt.colorbar(thresholdIm,fraction=0.046, pad=0.04,ax=ax[1,1],ticks=[0,1])
         if(savefig):
             fig.savefig(f'{self.data.imputer_name}_cov_corr.png')
         plt.show()
         #if(covAnalysis):
             #printHighCorrelations(corrs)
-        return 
+        return corrs
 
 
     def plotDataDistribution(self,savefig=True):
