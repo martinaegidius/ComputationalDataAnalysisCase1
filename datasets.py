@@ -104,7 +104,7 @@ class case1TrainSet:
         #strategies: "mean","median", "most frequent"
         self.imputer = SimpleImputer(missing_values=np.nan, strategy=imputationStrategy)
         self.imputer_name = f"{imputationStrategy} univariate imputation"
-        if(X==None): #transform complete dataset
+        if(X is None): #transform complete dataset
             self.saveMissingIndices()
             self.X = self.imputer.fit_transform(self.X)
         else: #transform passed subset
@@ -116,7 +116,7 @@ class case1TrainSet:
         #possible weight schemes: "uniform" (Equal influence of K nearest points),"distance" (Closer points in neighbourhood larger influence)
         self.imputer = KNNImputer(n_neighbors=n_neighbours, weights=weights)
         self.imputer_name = f"KNN k={n_neighbours} W={weights}"
-        if(X==None):
+        if(X is None):
             self.saveMissingIndices()
             self.X = self.imputer.fit_transform(self.X)
             return
@@ -127,7 +127,7 @@ class case1TrainSet:
     def iterative_imputation(self,max_iter=10,random_state=1,X=None):
         self.imputer = IterativeImputer(max_iter=max_iter, random_state=random_state,sample_posterior=False) #set sample_posterior true if using multiple imputations per sample 
         self.imputer_name = f"iterative k_max={max_iter}"
-        if(X==None):
+        if(X is None):
             self.saveMissingIndices()
             self.X = self.imputer.fit_transform(self.X)
             return
