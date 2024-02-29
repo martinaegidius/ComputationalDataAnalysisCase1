@@ -211,6 +211,9 @@ def scatterplots(numeric_df,categorical_df,pointsize=1.5,labels=None,savefig=Tru
         fig.savefig("dataScatterplots.png")
     plt.show()
 
+
+
+
 def categoricalMeans(train_data,savefig=False):
     #train_data is the full dataframe
     fig, ax = plt.subplots(1,5,figsize=(15,4))
