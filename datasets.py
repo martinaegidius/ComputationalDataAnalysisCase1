@@ -260,7 +260,7 @@ class case1Plotter(case1TrainSet):
         return None
     
 
-class case1Analysis:
+class case1Analyzer:
     def __init__(self,dataset):
         self.data = dataset
     
@@ -287,7 +287,7 @@ class case1Analysis:
             plt.show()
         return vif
     
-    
+
 
 
 
