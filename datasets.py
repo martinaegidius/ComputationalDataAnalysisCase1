@@ -214,9 +214,8 @@ class case1Plotter(case1TrainSet):
         plt.show()
         return 
     
-    def order_scatterplots_imputed(self,title="imputed values",pointsize=1.5,savefig=True):
+    def order_plots_imputed(self,title="imputed values",linewidth=2,savefig=True):
         fig, axs = plt.subplots(10,10,figsize=(16,18),sharey=False,sharex=True)
-        pointsize=1.5
         labels = self.data.var_names.copy() 
         try:
             labels.remove("C2") #remove C_2 from labels 
@@ -224,21 +223,21 @@ class case1Plotter(case1TrainSet):
             pass
         
         for p, ax in enumerate(axs.ravel()):
-            colors = ["tab:blue" if x==False else "red" for x in self.data.missing_mask[:,p]]
-            ax.plot(range(len(self.data.X[:,p])),self.data.X[:,p],s=pointsize,color=colors)
+            #colors = ["tab:blue" if x==False else "red" for x in self.data.missing_mask[:,p]]
+            ax.plot(range(len(self.data.X[:,p])),self.data.X[:,p],linewidth=linewidth)
             ax.text(.15,.9,f'{labels[p]}',
                 horizontalalignment='center',
                 transform=ax.transAxes)
             #ax.set_yticks([])
             ax.set_xticks([])
-        legend_elements = [
-            plt.Line2D([0], [0], marker='o', color='w', label='Non-imputed',
-            markerfacecolor='tab:blue', markersize=10),
-            plt.Line2D([0], [0], marker='o', color='w', label='Imputed',
-            markerfacecolor='red', markersize=10)
-        ]
+        #legend_elements = [
+        #    plt.Line2D([0], [0], marker='o', color='w', label='Non-imputed',
+        #    markerfacecolor='tab:blue', markersize=10),
+        #    plt.Line2D([0], [0], marker='o', color='w', label='Imputed',
+        #    markerfacecolor='red', markersize=10)
+        #]
 
-        fig.legend(title=self.data.imputer_name, handles=legend_elements, loc='upper center', ncols=2,bbox_to_anchor=(0.5,0.92))
+        #fig.legend(title=self.data.imputer_name, handles=legend_elements, loc='upper center', ncols=2,bbox_to_anchor=(0.5,0.92))
         if(savefig):
             fig.savefig(f"{self.data.imputer_name}.png")
         plt.show()
