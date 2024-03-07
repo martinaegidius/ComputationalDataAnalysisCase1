@@ -225,7 +225,7 @@ class case1Plotter(case1TrainSet):
         
         for p, ax in enumerate(axs.ravel()):
             colors = ["tab:blue" if x==False else "red" for x in self.data.missing_mask[:,p]]
-            ax.plot(x=range(len(self.data.X[:,p])),y=self.data.X[:,p],s=pointsize,color=colors)
+            ax.plot(range(len(self.data.X[:,p])),self.data.X[:,p],s=pointsize,color=colors)
             ax.text(.15,.9,f'{labels[p]}',
                 horizontalalignment='center',
                 transform=ax.transAxes)
